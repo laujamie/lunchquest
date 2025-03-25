@@ -41,7 +41,7 @@ refreshed periodically.`,
 			return
 		}
 
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*180)
 		defer cancel()
 
 		_, err = questrade.Authenticate(ctx, refreshToken)

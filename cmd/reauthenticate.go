@@ -5,13 +5,11 @@ package cmd
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"time"
 
-	"github.com/laujamie/lunchquest/internal/constants"
 	"github.com/laujamie/lunchquest/internal/questrade"
 	"github.com/spf13/cobra"
-	"github.com/zalando/go-keyring"
 )
 
 // reauthenticateCmd represents the reauthenticate command
@@ -26,19 +24,21 @@ or are about to expire.
 
 The new tokens will be stored securely in your system keyring.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		ctx, cancel := context.WithTimeout(context.Background(), time.Second*30)
+		ctx, cancel := context.WithTimeout(context.Background(), time.Second*180)
 		defer cancel()
 
-		refreshToken, err := keyring.Get(constants.SERVICE_NAME, constants.REFRESH_TOKEN_KEY)
+		oauthToken, err := questrade.GetStoredAuthToken()
 		if err != nil {
-			fmt.Println("failed to get refresh token")
+			log.Fatalf("failed to get refresh token: %v", err)
 			return
 		}
-		_, err = questrade.Authenticate(ctx, refreshToken)
+
+		_, err = questrade.Authenticate(ctx, oauthToken.RefreshToken)
 		if err != nil {
-			fmt.Println("failed to get new tokens")
+			log.Fatalf("failed to get new tokens: %v", err)
+			return
 		}
-		fmt.Println("tokens updated successfully")
+		log.Println("tokens updated successfully")
 	},
 }
 

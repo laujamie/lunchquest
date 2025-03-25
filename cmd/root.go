@@ -4,6 +4,7 @@ Copyright © 2025 laujamie
 package cmd
 
 import (
+	"log"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -49,7 +50,7 @@ func init() {
 	viper.SetDefault("QTAuthURL", "https://login.questrade.com/oauth2/token")
 
 	viper.SetConfigName("config")
-	viper.SetConfigName("yaml")
+	viper.SetConfigType("yaml")
 	viper.AddConfigPath(".")
 
 	viper.SafeWriteConfig()
@@ -59,4 +60,6 @@ func init() {
 	if err != nil {
 		panic("failed to read config file")
 	}
+
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 }
